@@ -9,7 +9,7 @@
         <% @matrix.each do |row| %>
         <tr>
             <% row.each do |el| %>
-              <td> <%= el %> </td>
+              <td style="width:30px;height=30px"> <%= el == 1 ? '*' : '.' %> </td>
             <% end %>
         </tr>
         <% end %>
