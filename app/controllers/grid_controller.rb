@@ -13,7 +13,7 @@ class GridController < ApplicationController
     puts "Upload method"
 
     begin
-      session[:generation], session[:size], session[:matrix] = validate_file(params[:grid_file])
+      session[:generation], session[:size], session[:matrix] = FileValidator.extract(params[:grid_file])
       print(session[:size])
       print(session[:grid_file])
       session[:error] = nil
@@ -36,7 +36,7 @@ class GridController < ApplicationController
     puts "Compute method"
 
     begin
-      session[:matrix] = compute_next_gen(data[:matrix])
+      session[:matrix] = GoL.compute_next_gen(data[:matrix])
       session[:generation] = data[:generation] + 1
       session[:error] = nil
     rescue Exception => ex
@@ -45,8 +45,11 @@ class GridController < ApplicationController
     end
   end
   helper_method :compute
-  
-  def validate_file(file)
+end
+
+
+class FileValidator
+  def self.extract(file)
     puts "Validate method"
     
     grid_rows = 0
@@ -93,8 +96,11 @@ class GridController < ApplicationController
 
     return Integer(generation), size, grid
   end
+end
 
-  def compute_next_gen(matrix)
+
+class GoL
+  def self.compute_next_gen(matrix)
     rows, cols = matrix.length, matrix[0].length
     matrix.each_index {|row|
       matrix[0].each_index {|col|
