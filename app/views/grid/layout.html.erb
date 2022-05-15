@@ -1,0 +1,16 @@
+<div>
+    Generation: <%= @generation %>
+    <br>
+    <%= @size %>
+    <br>
+    <table>
+        <% @matrix.each do |row| %>
+        <tr>
+            <% row.each do |el| %>
+              <td> <%= el %> </td>
+            <% end %>
+        </tr>
+        <% end %>
+    </table>
+    <button>START</button>
+</div>

@@ -1,0 +1,10 @@
+<div class="container">
+    <%= form_with url: "grid/upload", multipart: true do |form| %>
+        <%= form.file_field :grid_file %>
+        <br>
+        <%= form.submit "Upload Grid" %>
+    <% end %>
+    <% if !@error.blank? %>
+        <%= @error %>
+    <% end %>
+</div>
