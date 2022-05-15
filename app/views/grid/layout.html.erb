@@ -1,7 +1,9 @@
 <div>
     Generation: <%= @generation %>
     <br>
-    <%= @size %>
+    <% @size.each do |el| %>
+        <%= @el %>
+    <% end %>
     <br>
     <table>
         <% @matrix.each do |row| %>
@@ -12,5 +14,8 @@
         </tr>
         <% end %>
     </table>
-    <button>START</button>
+    <%= button_tag 'Start', onclick: 'startControllerPolling(' + String(@generation) + ', "[' + @size.map(&:inspect).join(', ') + ']", "[' + @matrix.map(&:inspect).join(', ') + ']")'  %>
+    <%= button_tag 'Stop', onclick: 'stopControllerPolling()'  %>
+    <%= button_to 'Next', compute(generation: @generation, size: @size, matrix: @matrix) %>
 </div>
+<%= javascript_include_tag 'poller' %>
