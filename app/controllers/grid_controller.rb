@@ -61,19 +61,25 @@ class FileValidator
       if index == 0
         pattern = "^Generation [0-9]+:$"
         if line.match(pattern)
-          generation = line.split()[1].chomp(":")
+          generation = Integer(line.split()[1].chomp(":"))
+          if generation < 0
+            raise "Error at line #{index+1}: generation number must be 0 or larger"
+          end
         else
-          raise "Error at line #{index+1}: line '#{line}' does not match pattern '#{pattern}'"
+          raise "Error at line #{index+1}: '#{line}' does not match pattern '#{pattern}'"
         end
       elsif index == 1
         pattern = "^[0-9]+ [0-9]+$"
         if line.match(pattern)
           size = line.split().map {|el| Integer(el)}
           if size.length != 2
-            raise "Error at line 1: expected exactly 2 numbers, found #{size.length}"
+            raise "Error at line #{index+1}: expected exactly 2 numbers, found #{size.length}"
+          end
+          if size[0] < 1 || size[1] < 1
+            raise "Error at line #{index+1}: size numbers must be larger than 0"
           end
         else
-          raise "Error at line #{index+1}: line '#{line}' does not match pattern '#{pattern}'"
+          raise "Error at line #{index+1}: '#{line}' does not match pattern '#{pattern}'"
         end
       else
         pattern = "^([\.\*])+$"
@@ -86,7 +92,7 @@ class FileValidator
           grid.append(simbols.map {|x| x == "." ? 0 : 1})
           grid_rows += 1
         else
-          raise "Error at line #{index+1}: line '#{line}' does not match pattern '#{pattern}'"
+          raise "Error at line #{index+1}: '#{line}' does not match pattern '#{pattern}'"
         end
       end
     end
@@ -94,7 +100,7 @@ class FileValidator
       raise "Error: expected #{size[0]} rows, found #{grid_rows}"
     end
 
-    return Integer(generation), size, grid
+    return generation, size, grid
   end
 end
 
