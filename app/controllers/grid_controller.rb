@@ -25,6 +25,13 @@ class GridController < ApplicationController
     end
   end
 
+  def layout()
+    puts "layout method"
+    @generation = session[:generation]
+    @size = session[:size]
+    @matrix = session[:matrix]
+  end
+
   def compute(data)
     puts "Compute method"
 
@@ -42,35 +49,48 @@ class GridController < ApplicationController
   def validate_file(file)
     puts "Validate method"
     
+    grid_rows = 0
     generation = ""
     size = []
     grid = []
     File.foreach(file).each_with_index do |line, index|
+      line = line.strip
       if index == 0
         pattern = "^Generation [0-9]+:$"
-        if line.delete("\r\n\\").match(pattern)
+        if line.match(pattern)
           generation = line.split()[1].chomp(":")
         else
-          raise "Error at line #{index}: line '#{line}' does not match pattern '#{pattern}'"
+          raise "Error at line #{index+1}: line '#{line}' does not match pattern '#{pattern}'"
         end
       elsif index == 1
         pattern = "^[0-9]+ [0-9]+$"
-        if line.delete("\r\n\\").match(pattern)
+        if line.match(pattern)
           size = line.split().map {|el| Integer(el)}
+          if size.length != 2
+            raise "Error at line 1: expected exactly 2 numbers, found #{size.length}"
+          end
         else
-          raise "Error at line #{index}: line '#{line}' does not match pattern '#{pattern}'"
+          raise "Error at line #{index+1}: line '#{line}' does not match pattern '#{pattern}'"
         end
       else
         pattern = "^([\.\*])+$"
-        line = line.strip
         if line.match(pattern)
           simbols = line.split("")
+          if simbols.length != size[1]
+            raise "Error at line #{index+1}: expected #{size[1]}, found #{simbols.length} simbols"
+          end
+          
           grid.append(simbols.map {|x| x == "." ? 0 : 1})
+          grid_rows += 1
         else
-          raise "Error at line #{index}: line '#{line}' does not match pattern '#{pattern}'"
+          raise "Error at line #{index+1}: line '#{line}' does not match pattern '#{pattern}'"
         end
       end
     end
+    if grid_rows != size[0]
+      raise "Error: expected #{size[0]} rows, found #{grid_rows}"
+    end
+
     return Integer(generation), size, grid
   end
 
@@ -107,12 +127,5 @@ class GridController < ApplicationController
       end
     } }
     return mapped
-  end
-
-  def layout()
-    puts "layout method"
-    @generation = session[:generation]
-    @size = session[:size]
-    @matrix = session[:matrix]
   end
 end
