@@ -14,8 +14,7 @@
         </tr>
         <% end %>
     </table>
-    <%= button_tag 'Start', onclick: 'startControllerPolling(' + String(@generation) + ', "[' + @size.map(&:inspect).join(', ') + ']", "[' + @matrix.map(&:inspect).join(', ') + ']")'  %>
-    <%= button_tag 'Stop', onclick: 'stopControllerPolling()'  %>
-    <%= button_to 'Next', compute(generation: @generation, size: @size, matrix: @matrix) %>
+    <%= button_tag 'Start', onclick: 'startControllerPolling("nextLink")'  %>
+    <%= link_to 'Next', compute(generation: @generation, size: @size, matrix: @matrix), id: "nextLink", style: "visibility: hidden" %>
 </div>
 <%= javascript_include_tag 'poller' %>
