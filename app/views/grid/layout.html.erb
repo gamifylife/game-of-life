@@ -15,6 +15,7 @@
         <% end %>
     </table>
     <%= button_tag 'Start', onclick: 'startControllerPolling("nextLink")'  %>
+    <%= button_tag 'Stop', onclick: 'stopControllerPolling()'  %>
     <%= link_to 'Next', compute(generation: @generation, size: @size, matrix: @matrix), id: "nextLink", style: "visibility: hidden" %>
 </div>
 <%= javascript_include_tag 'poller' %>
